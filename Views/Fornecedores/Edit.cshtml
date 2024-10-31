@@ -1,0 +1,64 @@
+﻿@model PapelariaMVC.Models.Fornecedor
+
+@{
+    ViewData["Title"] = "Editar Fornecedor";
+}
+
+<div class="container mt-5">
+    <h1 class="display-4">Editar Fornecedor</h1>
+    <h4 class="mb-4">Atualize os dados abaixo</h4>
+    <hr />
+
+    <div class="row">
+        <div class="col-md-6 offset-md-3">
+            <form asp-action="Edit">
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-4"></div>
+                <input type="hidden" asp-for="Id" />
+
+                <div class="form-group">
+                    <label asp-for="NomeEmpresa" class="control-label"></label>
+                    <input asp-for="NomeEmpresa" class="form-control" placeholder="Nome da Empresa" />
+                    <span asp-validation-for="NomeEmpresa" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Cnpj" class="control-label"></label>
+                    <input asp-for="Cnpj" class="form-control" placeholder="CNPJ" />
+                    <span asp-validation-for="Cnpj" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Endereco" class="control-label"></label>
+                    <input asp-for="Endereco" class="form-control" placeholder="Endereço" />
+                    <span asp-validation-for="Endereco" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Telefone" class="control-label"></label>
+                    <input asp-for="Telefone" class="form-control" placeholder="Telefone" />
+                    <span asp-validation-for="Telefone" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Email" class="control-label"></label>
+                    <input asp-for="Email" class="form-control" placeholder="Email" />
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <input type="submit" value="Salvar Fornecedor" class="btn btn-primary btn-block" />
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="mt-4">
+        <a asp-action="Index" class="btn btn-secondary">Voltar para Lista</a>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

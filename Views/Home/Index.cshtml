@@ -2,7 +2,162 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<style>
+    :root {
+        --primary: #ff6b6b;
+        --secondary: #4ecdc4;
+        --accent: #ffe66d;
+    }
+
+    body {
+        background: linear-gradient(135deg, #f6f8ff 0%, #ffffff 100%);
+        font-family: 'Segoe UI', sans-serif;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        margin: 0; /* Remove a margem padrão do body */
+        position: relative; /* Para que a posição do fundo funcione corretamente */
+    }
+
+    .background {
+        background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+        position: absolute; /* Para que o conteúdo possa ser posicionado acima */
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%; /* Garantir que ocupa 100% da altura */
+        z-index: -1; /* Coloca o background atrás de outros elementos */
+    }
+
+    .content-wrapper {
+        position: relative;
+        z-index: 1; /* Coloca o conteúdo acima do background */
+        background: rgba(255, 255, 255, 0.9);
+        border-radius: 15px;
+        padding: 2rem;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        margin-top: 5rem; /* Espaço acima para evitar sobreposição com o navbar */
+    }
+
+    .card {
+        backdrop-filter: blur(5px);
+        background: rgba(255, 255, 255, 0.95);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1) !important;
+        }
+
+    footer {
+        z-index: 2; /* Certifica-se que o footer fica acima do background */
+        position: relative; /* Para que o z-index funcione corretamente */
+    }
+</style>
+
+<div class="background"></div>
+<div class="container mt-5 content-wrapper">
+    <h1 class="display-4 text-center mb-4">Bem-vindo à PapelariaMVC!</h1>
+    <p class="lead text-center mb-4">Sua solução completa para gerenciar vendas e produtos.</p>
+
+    <div class="row">
+        <div class="col-lg-4 col-md-6 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Total de Clientes</h5>
+                    <h2 class="card-text" id="totalClientes">Carregando...</h2>
+                    <canvas id="clientesChart" height="200"></canvas>
+                    <a href="@Url.Action("Index", "Clientes")" class="btn btn-primary mt-2">Ver Clientes</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4 col-md-6 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Total de Produtos</h5>
+                    <h2 class="card-text" id="totalProdutos">Carregando...</h2>
+                    <canvas id="produtosChart" height="200"></canvas>
+                    <a href="@Url.Action("Index", "Produtos")" class="btn btn-success mt-2">Ver Produtos</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4 col-md-6 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Total de Vendas</h5>
+                    <h2 class="card-text" id="totalVendas">Carregando...</h2>
+                    <canvas id="vendasChart" height="200"></canvas>
+                    <a href="@Url.Action("Index", "Vendas")" class="btn btn-warning mt-2">Ver Vendas</a>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        $(document).ready(function () {
+            // Carregar os totais
+            $.get('@Url.Action("GetTotalClientes", "Clientes")', function (data) {
+                $('#totalClientes').text(data);
+                createChart('clientesChart', data);
+            }).fail(function () {
+                $('#totalClientes').text('Erro ao carregar.');
+            });
+
+            $.get('@Url.Action("GetTotal", "Produtos")', function (data) {
+                $('#totalProdutos').text(data);
+                createChart('produtosChart', data);
+            }).fail(function () {
+                $('#totalProdutos').text('Erro ao carregar.');
+            });
+
+            $.get('@Url.Action("GetTotalVendas", "Vendas")', function (data) {
+                $('#totalVendas').text(data);
+                createChart('vendasChart', data);
+            }).fail(function () {
+                $('#totalVendas').text('Erro ao carregar.');
+            });
+        });
+
+        function createChart(chartId, total) {
+            var ctx = document.getElementById(chartId).getContext('2d');
+            var chart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Total', 'Restante'],
+                    datasets: [{
+                        label: 'Quantidade',
+                        data: [total, 100 - total],
+                        backgroundColor: [
+                            'rgba(75, 192, 192, 0.6)',
+                            'rgba(201, 203, 207, 0.3)'
+                        ],
+                        borderColor: 'rgba(255, 255, 255, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function (tooltipItem) {
+                                    return tooltipItem.label + ': ' + tooltipItem.raw;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+    </script>
+}

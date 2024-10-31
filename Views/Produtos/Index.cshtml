@@ -1,0 +1,65 @@
+﻿@model IEnumerable<PapelariaMVC.Models.Produto>
+
+@{
+    ViewData["Title"] = "Produtos";
+}
+
+<div class="container">
+    <h1 class="mt-4">Lista de Produtos</h1>
+
+    <p>
+        <a class="btn btn-primary" asp-action="Create">Criar Novo Produto</a>
+    </p>
+
+    <div class="table-responsive">
+        <table class="table table-striped table-bordered mt-3">
+            <thead class="table-light">
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Nome)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Descricao)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Preco)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.QuantidadeEstoque)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Fornecedor.NomeEmpresa)
+                    </th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Nome)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Descricao)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Preco)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.QuantidadeEstoque)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Fornecedor.NomeEmpresa)
+                        </td>
+                        <td>
+                            <a class="btn btn-sm btn-warning" asp-action="Edit" asp-route-id="@item.Id">Editar</a>
+                            <a class="btn btn-sm btn-info" asp-action="Details" asp-route-id="@item.Id">Detalhes</a>
+                            <a class="btn btn-sm btn-danger" asp-action="Delete" asp-route-id="@item.Id">Deletar</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
